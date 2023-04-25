@@ -34,7 +34,7 @@ function loaddata() {
                     let a = $("<a href='#' id='"+ i +"' class='list-group-item list-group-item-action border-0 w-100'> </a>");
                     let div = $("<div class='d-flex w-100 justify-content-between'> </div>");
                     let h = $("<h5 class='mb-1'> " + appointment.title + " </h5>");
-                    let sm = $("<small>" + appointment.date + "</small>")
+                    let sm = $("<small>" + appointment.date + "</small>");
                     let p = $("<p class='mb-1'>" + appointment.description + "</p>");
                     let t = $("<small>" + appointment.active + "</small>");
 
@@ -65,14 +65,16 @@ function showDetail(target){
     
         //basic detail content box
         let card = $("<div class='card w-100 p-3 bg-light'> </div>");
-        let h2 = $("<h2> " + appointments[target.id].title + " </h2>");
+        let h2 = $("<h2> " + appointments[target.id].title + " - " + appointments[target.id].date + " </h2>");
         let p1 = $("<p> " + appointments[target.id].description + " </p>");
-        let p2 = $("<p> " + appointments[target.id].duration + "min </p>");
+        let p2 = $("<p> Duration: " + appointments[target.id].duration + "min </p>");
 
         //checkbox form
         let form = $("<form> </form>");
-        let name = $("<div> <label for='nameInput' class='ms-2'> Name: </label> <input type='text' class='form-control m-2' id='nameInput' placeholder='your name' required> </div>")
+        let name = $("<div> <label for='nameInput' class='ms-2'> Your Name: </label> <input type='text' class='form-control m-2' id='nameInput' placeholder='your name' required> </div>")
         let radioBox = $("<div class='m-2'> </div>");
+
+        let p3 = $("<p class='m-2'> Available Options: </p>");
 
         for(let i=0; i<appointments[target.id].options.length; i++){
             let radioOption = $("<div class='form-check m-2'> </div>");
@@ -81,11 +83,15 @@ function showDetail(target){
             radioBox.append(radioOption);
         }
 
+        let comment = $("<textarea class='form-control' id='exampleFormControlTextarea1' placeholder='leave a comment ...'></textarea>")
+
         let submit = $("<button class='btn btn-primary m-2' type='submit'>Submit your pick</button>")
 
         //put together form
         form.append(name);
+        form.append(p3);
         form.append(radioBox);
+        form.append(comment);
         form.append(submit);
 
         //put together card
