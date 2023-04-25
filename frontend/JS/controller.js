@@ -64,9 +64,10 @@ function showDetail(target){
         $('#detailBox').empty();
     
         //basic detail content box
-        let card = $("<div class='card w-100 mh-50 p-3 bg-secondary'> </div>");
+        let card = $("<div class='card w-100 p-3 bg-light'> </div>");
         let h2 = $("<h2> " + appointments[target.id].title + " </h2>");
-        let p = $("<p> " + appointments[target.id].description + " </p>");
+        let p1 = $("<p> " + appointments[target.id].description + " </p>");
+        let p2 = $("<p> " + appointments[target.id].duration + "min </p>");
 
         //checkbox form
         let form = $("<form> </form>");
@@ -89,7 +90,8 @@ function showDetail(target){
 
         //put together card
         card.append(h2);
-        card.append(p);
+        card.append(p1);
+        card.append(p2);
         card.append(form);
 
         $('#detailBox').append(card);
