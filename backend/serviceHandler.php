@@ -1,5 +1,6 @@
 <?php
 include("businesslogic/simpleLogic.php");
+require_once('DB/db_access.php');
 
 //declare and set param and method variables used in handlerequest method from logic.php
 $param = "";
@@ -15,6 +16,7 @@ else{
 //create new logic object and handle request
 $logic = new SimpleLogic();
 $result = $logic->handleRequest($method);
+
 if ($result == null) {
     response("GET", 400, null);
 } else {
