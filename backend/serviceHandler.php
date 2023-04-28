@@ -14,7 +14,7 @@ else{
 
 //create new logic object and handle request
 $logic = new SimpleLogic();
-$result = $logic->handleRequest($method);
+$result = $logic->handleRequest($method, $param);
 
 if ($result == null) {
     response("GET", 400, null);

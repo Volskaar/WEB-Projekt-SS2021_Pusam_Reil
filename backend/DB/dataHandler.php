@@ -32,6 +32,16 @@ class DataHandler
 
         return $tmp;
     }
+
+    //returns all db-options for one appointment
+    public function queryOptions($appID){
+        $query = "SELECT * FROM options WHERE appointment_fk = '$appID'";
+        $stmnt = $this->connection->prepare($query);
+        $stmnt->execute();
+        $tmp = $stmnt->get_result()->fetch_all();
+
+        return $tmp;
+    }
     
     /*returns array of all demo-appointments
     public function queryAppointments(){
@@ -40,7 +50,7 @@ class DataHandler
             array_push($result, $val);
         }
         return $result;
-    }*/
+    }
 
     private static function getDemoData()
     {
@@ -52,6 +62,6 @@ class DataHandler
             [new Appointment(4, "Appointment 5", "Office", "28.04.23", "A small description", 90, ["18:00", "19:30"], "inactive")],
         ];
         return $demodata;
-    }
+    }*/
 }
 ?>

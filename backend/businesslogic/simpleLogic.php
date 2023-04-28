@@ -12,11 +12,14 @@ class SimpleLogic
 
     //result is datahandler function, depending on handed method
     //returns result
-    function handleRequest($method)
+    function handleRequest($method, $param)
     {
         switch ($method) {
             case "queryAppointments":
                 $res = $this->dh->queryAppointments();
+                break;
+            case "queryOptions":
+                $res = $this->dh->queryOptions($param);
                 break;
             default:
                 $res = null;
