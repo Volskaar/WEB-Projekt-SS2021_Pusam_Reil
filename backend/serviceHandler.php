@@ -12,6 +12,13 @@ else{
     false;
 }
 
+if(isset($_GET["param"])){
+    $param = $_GET["param"];
+}
+else{
+    false;
+}
+
 //create new logic object and handle request
 $logic = new SimpleLogic();
 $result = $logic->handleRequest($method, $param);

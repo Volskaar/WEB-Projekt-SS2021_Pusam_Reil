@@ -104,6 +104,7 @@ function showDetail(target){
 
         //display options
 
+        console.log(target.id);
         var options = loadOptionsForAppointment(target.id);
         console.log(options);
         let table = $("<table class='table'> </table>");
@@ -111,7 +112,6 @@ function showDetail(target){
 
         for(let i=0; i<options.length; i++){
             thead.append("<th scope='col'> " + options[i][1] + "</th>");
-            console.log(options[i]);
         }
 
         table.append(thead);
