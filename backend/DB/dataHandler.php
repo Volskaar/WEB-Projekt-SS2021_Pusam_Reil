@@ -22,15 +22,25 @@ class DataHandler
             die('Could not connect: ' . mysql_error());
         }
     }
+
+    //returns array of all db-appointments
+    public function queryAppointments(){
+        $query = "SELECT * FROM appointment";
+        $stmnt = $this->connection->prepare($query);
+        $stmnt->execute();
+        $tmp = $stmnt->get_result()->fetch_all();
+
+        return $tmp;
+    }
     
-    //returns array of all appointments
+    /*returns array of all demo-appointments
     public function queryAppointments(){
         $result = array();
         foreach ($this->getDemoData() as $val) {
             array_push($result, $val);
         }
         return $result;
-    }
+    }*/
 
     private static function getDemoData()
     {

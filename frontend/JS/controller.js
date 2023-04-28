@@ -23,20 +23,27 @@ function loaddata() {
         async: true,
         //on success create html element list with information on display
         success: function (data) {
-            for(let i=0; i<data.length; i++){
-                var dataItem = data[i];
+            /*for(let i=0; i<data.length; i++){
+                var dataItem = data[i];*/
             
 
-                for(let j=0; j<dataItem.length; j++){
-                    var appointment = dataItem[j];
+                for(let j=0; j<data.length; j++){
+                    var appointment = data[j];
                     appointments.push(appointment);
 
-                    let a = $("<a href='#' id='"+ i +"' class='list-group-item list-group-item-action border-0 w-100'> </a>");
+                    let a = $("<a href='#' id='"+ j +"' class='list-group-item list-group-item-action border-0 w-100'> </a>");
                     let div = $("<div class='d-flex w-100 justify-content-between'> </div>");
-                    let h = $("<h5 class='mb-1'> " + appointment.title + " </h5>");
-                    let sm = $("<small>" + appointment.date + "</small>");
-                    let p = $("<p class='mb-1'>" + appointment.description + "</p>");
-                    let t = $("<small>" + appointment.active + "</small>");
+                    let h = $("<h5 class='mb-1'> " + appointment[1] + " </h5>"); //title
+                    let sm = $("<small>" + appointment[3] + "</small>"); //creation date
+                    let p = $("<p class='mb-1'>" + appointment[5] + "</p>"); //descr.
+                    let t; //active
+
+                    if(appointment[7]){
+                        t = $("<small class='text-success'> active </small>");
+                    }
+                    else{
+                        t = $("<small class='text-danger'> inactive </small>");
+                    }
 
                     div.append(h);
                     div.append(sm);
@@ -46,9 +53,9 @@ function loaddata() {
 
                     $('#appointmentList').append(a);
                 }
-            }
+            //}
 
-            //test
+            //test console print
             for(let i=0; i<appointments.length; i++){
                 console.log(appointments[i]);
             }
@@ -65,9 +72,10 @@ function showDetail(target){
     
         //basic detail content box
         let card = $("<div class='card w-100 p-3 bg-light'> </div>");
-        let h2 = $("<h2> " + appointments[target.id].title + " - " + appointments[target.id].date + " </h2>");
-        let p1 = $("<p> " + appointments[target.id].description + " </p>");
-        let p2 = $("<p> Duration: " + appointments[target.id].duration + "min </p>");
+        let h2 = $("<h2> " + appointments[target.id][1] + " </h2>");
+        let h5 = $("<h5> Open: " + appointments[target.id][3] + " -> " + appointments[target.id][4] + "</h5>");
+        let p1 = $("<p> " + appointments[target.id][5] + " </p>");
+        let p2 = $("<p> Duration: " + appointments[target.id][6] + "min </p>");
 
         //checkbox form
         let form = $("<form> </form>");
@@ -76,12 +84,11 @@ function showDetail(target){
 
         let p3 = $("<p class='m-2'> Available Options: </p>");
 
-        for(let i=0; i<appointments[target.id].options.length; i++){
-            let radioOption = $("<div class='form-check m-2'> </div>");
-            radioOption.append("<input class='form-check-input' type='radio' name='radioOptions' id='radio"+i+"'>");
-            radioOption.append("<label class='form-check-label' for='radio"+i+"'> " + appointments[target.id].options[i] + " </label>");
-            radioBox.append(radioOption);
-        }
+        //display options
+
+        
+
+        //---------------
 
         let comment = $("<textarea class='form-control' id='exampleFormControlTextarea1' placeholder='leave a comment ...'></textarea>")
 
@@ -96,6 +103,7 @@ function showDetail(target){
 
         //put together card
         card.append(h2);
+        card.append(h5);
         card.append(p1);
         card.append(p2);
         card.append(form);
