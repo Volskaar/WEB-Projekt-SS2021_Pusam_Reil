@@ -114,7 +114,14 @@ function showDetail(target){
             thead.append("<th scope='col'> " + options[i][1] + "</th>");
         }
 
+        let tbody = $("<tbody><tr> </tr></tbody>");
+
+        for(let i=0; i<options.length; i++){
+            tbody.append("<td> <input class='form-check-input' type='checkbox' value='' id='flexCheckDefault'> </td>");
+        }
+
         table.append(thead);
+        table.append(tbody);
         optionBox.append(table);
 
         optionBox.append(p3);
