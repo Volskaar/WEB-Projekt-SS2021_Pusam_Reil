@@ -1,34 +1,28 @@
 <?php
 
-namespace db;
-use mysqli;
-
-
-
-
 include("./models/appointment.php");
 class DataHandler
 {
+    //Mit Erklärung von Gobber Laurin
     private $servername;
     private $userAdmin;
     private $passwordAdmin;
     private $database;
-
-
-    //Mit Erklärung von Gobber Laurin
+    private $connection;
+    
     function __construct(){
         $this->servername = "localhost";
-
         $this->usernameAdmin = "bif2webscriptinguser";
         $this->passwordAdmin = "bif2023";
-    
         $this->database = "appointment_db";
     
-    
         //create connection
-        $connection = new MySQLi($servername, $usernameAdmin, $passwordAdmin, $database);
+        $this->connection = new MySQLi($this->servername, $this->usernameAdmin, $this->passwordAdmin, $this->database);
+        if (!$this->connection){
+            die('Could not connect: ' . mysql_error());
+        }
     }
-
+    
     //returns array of all appointments
     public function queryAppointments(){
         $result = array();

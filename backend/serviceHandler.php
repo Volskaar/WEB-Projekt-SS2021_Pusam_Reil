@@ -1,6 +1,5 @@
 <?php
 include("businesslogic/simpleLogic.php");
-require_once('DB/db_access.php');
 
 //declare and set param and method variables used in handlerequest method from logic.php
 $param = "";
