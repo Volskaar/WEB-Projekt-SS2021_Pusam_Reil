@@ -1,4 +1,5 @@
-//Starting point for JQuery init
+/* +++ Functionality related to onclick events +++ */
+
 $(document).ready(function () {
     loadAppointmentList();
 });
@@ -7,6 +8,16 @@ $(document).ready(function () {
 $(document).on('click','.list-group-item',function(click){
     showDetail(click.target);
 });
+
+$(document).on('click','#createAppointment',function(click){
+    showNewAppointmentField();
+});
+
+
+
+
+
+/* +++ Functionality related to displaying existing appointments +++ */
 
 //global list of appointments stored for working with data
 let appointments = new Array();
@@ -123,14 +134,13 @@ function showDetail(target){
         table.append(thead);
         table.append(tbody);
         optionBox.append(table);
-
         optionBox.append(p3);
 
         //---------------
 
-        let comment = $("<textarea class='form-control' id='exampleFormControlTextarea1' placeholder='leave a comment ...'></textarea>")
+        let comment = $("<textarea class='form-control' id='comment' placeholder='leave a comment ...'></textarea>");
 
-        let submit = $("<button class='btn btn-primary m-2' type='submit'>Submit your pick</button>")
+        let submit = $("<button class='btn btn-primary m-2' id='#' type='submit'>Submit your pick</button>");
 
         //put together form
         form.append(name);
@@ -148,4 +158,78 @@ function showDetail(target){
 
         $('#detailBox').append(card);
     }
+}
+
+//submits data from form when choosing options on existing meeting
+function submitPick(){
+    //1. collect form data, store in array
+
+    //2. ajax call -> hand array to function and move down to dataHandler.php
+    
+
+    //3. in datahandler.php: create entries in tables via sql
+}
+
+
+
+
+/* +++ Functionality related to creating a new appointment +++ */
+
+function showNewAppointmentField(){
+    $('#detailBox').empty();
+    
+    //basic detail content box
+    let card = $("<div class='card w-100 p-3 bg-light'> </div>");
+    let h2 = $("<h2 class='text-center m-2'> Create a new Appointment </h2>")
+    let form = $("<form accept-charset='utf-8'> </form>");
+
+    //form inputs
+    let titleInput = $("<input id='title' class='form-control m-2' type='text' value='Appointment Title'/>");
+    form.append(titleInput);
+
+    let creatorName = $("<input id='creator' class='form-control m-2' type='text' value='Name of creator'/>");
+    form.append(creatorName);
+
+    let placeInput = $("<input id='place' class='form-control m-2' type='text' value='Place of meeting'/>");
+    form.append(placeInput);
+
+    let durationLabel = $("<label for='place' class='form-label m-2'> Duration: </label>");
+    let durationInput = $("<input id='place' class='form-control m-2' type='number' value='00'/>");
+    form.append(durationLabel);
+    form.append(durationInput);
+
+    let timeoutLabel = $("<label for='timeout' class='form-label m-2'> Cease Date: </label>");
+    let timeoutInput = $("<input id='timeout' class='form-control m-2' type='date'/>");
+    form.append(timeoutLabel);
+    form.append(timeoutInput);
+
+    //create more options on demand
+    options = [];
+    let optionDiv =$("<div class='container'> </div>")
+    let optionh4 = $("<h5> Options: </h5>")
+    let optionList = $("<ul id='optionList' class='list-group d-flex justify-content-around'> </ul>");
+    let newOptionButton = $("<button class='btn btn-info' id='newOpBtn'> + </button>");
+    optionDiv.append(optionh4);
+    optionDiv.append(optionList);
+    optionDiv.append(newOptionButton);
+
+    $(document).on('click','#newOpBtn',function(click){
+        addNewOptionToFormAppointment();
+    });
+    form.append(optionDiv);
+
+    let descriptionInput = $("<textarea class='form-control m-2' id='description' placeholder='Describe the meeting ...'></textarea>");
+    form.append(descriptionInput);
+
+    let submitNewAppointment = $("<button type='submit' class='btn btn-success m-2' id='addAppointment'> Create Appointment </button>");
+    form.append(submitNewAppointment);
+
+    card.append(h2);
+    card.append(form);
+    $('#detailBox').append(card);
+}
+
+
+function addNewOptionToFormAppointment(){
+    $('#optionList').append("<input class='form-control m-2 appOption' type='datetime-local' value='Describe your meeting ...'/>");
 }
