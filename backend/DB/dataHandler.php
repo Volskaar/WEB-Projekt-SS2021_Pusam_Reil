@@ -42,6 +42,29 @@ class DataHandler
 
         return $tmp;
     }
+
+    public function createNewAppointment(array $data){
+        $sql = "INSERT INTO appointment (title, place, create_date, cease_date, description, duration, active, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmnt = $this->connection->prepare($sql);
+        $stmnt-> bind_param("sssssiis", $title, $place, $create_date, $cease_date, $description, $duration, $active, $created_by);
+
+        $title = $data[0];
+        $place = $data[1];
+        $create_date = $data[2];
+        $cease_date = $data[3];
+        $description = $data[4];
+        $duration = $data[5];
+        $active = $data[6];
+        $created_by = $data[7];
+
+        $stmnt->execute();
+
+        return $data;
+    }
+
+    public function createNewOptions($data){
+
+    }
     
     /*returns array of all demo-appointments
     public function queryAppointments(){

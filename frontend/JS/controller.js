@@ -181,25 +181,25 @@ function showNewAppointmentField(){
     //basic detail content box
     let card = $("<div class='card w-100 p-3 bg-light'> </div>");
     let h2 = $("<h2 class='text-center m-2'> Create a new Appointment </h2>")
-    let form = $("<form accept-charset='utf-8'> </form>");
+    let form = $("<form accept-charset='utf-8' method='POST'> </form>");
 
     //form inputs
-    let titleInput = $("<input id='title' class='form-control m-2' type='text' value='Appointment Title'/>");
+    let titleInput = $("<input id='title' class='form-control m-2' type='text' value='Appointment Title' required/>");
     form.append(titleInput);
 
-    let creatorName = $("<input id='creator' class='form-control m-2' type='text' value='Name of creator'/>");
+    let creatorName = $("<input id='creator' class='form-control m-2' type='text' value='Name of creator' required/>");
     form.append(creatorName);
 
-    let placeInput = $("<input id='place' class='form-control m-2' type='text' value='Place of meeting'/>");
+    let placeInput = $("<input id='place' class='form-control m-2' type='text' value='Place of meeting' required/>");
     form.append(placeInput);
 
-    let durationLabel = $("<label for='place' class='form-label m-2'> Duration: </label>");
-    let durationInput = $("<input id='place' class='form-control m-2' type='number' value='00'/>");
+    let durationLabel = $("<label for='duration' class='form-label m-2'> Duration: </label>");
+    let durationInput = $("<input id='duration' class='form-control m-2' type='number' value='00' required/>");
     form.append(durationLabel);
     form.append(durationInput);
 
     let timeoutLabel = $("<label for='timeout' class='form-label m-2'> Cease Date: </label>");
-    let timeoutInput = $("<input id='timeout' class='form-control m-2' type='date'/>");
+    let timeoutInput = $("<input id='timeout' class='form-control m-2' type='date' required/>");
     form.append(timeoutLabel);
     form.append(timeoutInput);
 
@@ -208,20 +208,27 @@ function showNewAppointmentField(){
     let optionDiv =$("<div class='container'> </div>")
     let optionh4 = $("<h5> Options: </h5>")
     let optionList = $("<ul id='optionList' class='list-group d-flex justify-content-around'> </ul>");
-    let newOptionButton = $("<button class='btn btn-info' id='newOpBtn'> + </button>");
+    let newOptionButton = $("<button type='button' class='btn btn-info' id='newOpBtn'> + </button>");
+
+    $(document).on('click','#newOpBtn',function(click){
+        $('#optionList').append("<input name='optionBox' class='form-control m-2 appOption' type='datetime-local' value='Describe your meeting ...'/>");
+    });
+
     optionDiv.append(optionh4);
     optionDiv.append(optionList);
     optionDiv.append(newOptionButton);
 
-    $(document).on('click','#newOpBtn',function(click){
-        addNewOptionToFormAppointment();
-    });
     form.append(optionDiv);
 
     let descriptionInput = $("<textarea class='form-control m-2' id='description' placeholder='Describe the meeting ...'></textarea>");
     form.append(descriptionInput);
 
-    let submitNewAppointment = $("<button type='submit' class='btn btn-success m-2' id='addAppointment'> Create Appointment </button>");
+    let submitNewAppointment = $("<button type='button' class='btn btn-success m-2' id='addAppointment'> Create Appointment </button>");
+    
+    $(document).on('click','#addAppointment',function(click){
+        createNewAppointment();
+    });
+    
     form.append(submitNewAppointment);
 
     card.append(h2);
@@ -230,6 +237,51 @@ function showNewAppointmentField(){
 }
 
 
-function addNewOptionToFormAppointment(){
-    $('#optionList').append("<input class='form-control m-2 appOption' type='datetime-local' value='Describe your meeting ...'/>");
+function createNewAppointment(){
+    //1. collect data from form and create array to hand over
+    let title = $('#title').val();
+    let place = $('#place').val();
+    let create_date = String(Date());
+    let cease_date = $('#timeout').val();
+    let description = $('#description').val();
+    let duration = $('#duration').val();
+    let active = 1;
+    let created_by = $('#creator').val();
+
+    var data = [];
+    data.push(title);
+    data.push(place);
+    data.push(create_date);
+    data.push(cease_date);
+    data.push(description);
+    data.push(duration);
+    data.push(active);
+    data.push(created_by);
+
+    console.log(data);
+
+    //check if all fields are set
+    let makeCall = true;
+    for(let i=0; i<data.length; i++){
+        if(data[i] == null){
+            makeCall = false;
+        }
+    }
+
+    //2. make ajax call to server -> store data
+    if(makeCall){
+        $.ajax({
+            type: "POST",
+            url: "../backend/serviceHandler.php",
+            cache: false,
+            data: {method: "createNewAppointment", param: data},
+            dataType: "json",
+            async: true,
+            success: function () {
+                console.log("success");
+            }
+        });
+    }
+
+    $('#detailBox').empty();
 }

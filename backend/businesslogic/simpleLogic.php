@@ -21,6 +21,9 @@ class SimpleLogic
             case "queryOptions":
                 $res = $this->dh->queryOptions($param);
                 break;
+            case "createNewAppointment":
+                $res = $this->dh->createNewAppointment($param);
+                break;
             default:
                 $res = null;
                 break;
