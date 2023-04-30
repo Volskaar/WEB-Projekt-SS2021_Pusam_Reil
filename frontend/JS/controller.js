@@ -177,10 +177,7 @@ function showDetail(target){
 
         $(document).on('click','#submitData',function(click){
             //determines if the specified user is already in the db / If not, he will be added
-            //let userID = userCheck($("#nameInput").val());
-
-            //Test
-            let userID = 1;
+            let userID = checkForUser($("#nameInput").val());1
 
             //creates an entry in comments"
             let commentEntry = [];
@@ -200,17 +197,22 @@ function showDetail(target){
             let optionID = [];
 
             //saves the id from the checkboxes in optionID[]
-            for(i = 0; i < optionBox.length; i++){
-                optionID[i] = $("#flexCheckDefault"+i).val();
+            for(i = 0; i < options.length; i++){
+                optionID[i] = parseInt($("#flexCheckDefault"+i).val());
             }
 
-            submittedData.push(targetID);
-            submittedData.push(optionID);
-            submittedData.push(userID);
-
-            //ajax call function
-            submitAppointmentInfo(submittedData);
-            //~~~~~~~~~~~~~~~~~~~~~~~~
+            //Loop to create multiple entries for different options
+            for(i = 0; i < optionID.length; i++){
+                submittedData.push(targetID);
+                submittedData.push(optionID[i]);
+                submittedData.push(userID);
+    
+                //ajax call function
+                submitAppointmentInfo(submittedData);
+                //Resets submitted Data
+                submittedData = new Array;
+                //~~~~~~~~~~~~~~~~~~~~~~~~
+            }
         });
 
 
