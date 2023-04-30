@@ -70,6 +70,8 @@ function loadAppointmentList() {
 }
 
 
+/* +++ Functionality related to options +++ */
+
 function loadOptionsForAppointment(appID){
     let options = [];
 
@@ -92,6 +94,23 @@ function loadOptionsForAppointment(appID){
     
     return options;
 }
+
+//call datahandler function to create db entries for options
+function createOptions(optionList){
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "createNewOptions", param: optionList},
+        dataType: "json",
+        async: true,
+        //on success creates options in db
+        success: function () {
+            console.log("options created successfully");
+        }
+    });
+}
+
 
 function submitAppointmentInfo(submittedData){
     //creates a connection between the different inputs in the db
@@ -234,18 +253,6 @@ function showDetail(target){
     }
 }
 
-//submits data from form when choosing options on existing meeting
-function submitPick(){
-    //1. collect form data, store in array
-
-    //2. ajax call -> hand array to function and move down to dataHandler.php
-    
-
-    //3. in datahandler.php: create entries in tables via sql
-}
-
-
-
 
 /* +++ Functionality related to creating a new appointment +++ */
 
@@ -285,7 +292,7 @@ function showNewAppointmentField(){
     let newOptionButton = $("<button type='button' class='btn btn-info' id='newOpBtn'> + </button>");
 
     $(document).on('click','#newOpBtn',function(click){
-        $('#optionList').append("<input name='optionBox' class='form-control m-2 appOption' type='datetime-local' value='Describe your meeting ...'/>");
+        $('#optionList').append("<input name='optionBox' class='form-control m-2 appOption' type='datetime-local'/>");
     });
 
     optionDiv.append(optionh4);
@@ -348,6 +355,13 @@ function createNewAppointment(){
 
     console.log(data);
 
+    //get options from list of options into array
+    let optionList = [];
+    let optionItems = document.getElementsByClassName("appOption");
+    for(let i=0; i<optionItems.length; i++){
+        optionList[i] = optionItems[i].value;
+    }
+
     //check if all fields are set
     let makeCall = true;
     for(let i=0; i<data.length; i++){
@@ -357,7 +371,7 @@ function createNewAppointment(){
     }
 
     //2. make ajax call to server -> store data
-    if(makeCall){
+    if(makeCall && optionList.length > 0){
         $.ajax({
             type: "GET",
             url: "../backend/serviceHandler.php",
@@ -366,16 +380,22 @@ function createNewAppointment(){
             dataType: "json",
             async: true,
             success: function () {
+                //after creating appointment -> enter options into db with appointment id (query by title?!)
+                createOptions(optionList);
+                
                 alert("Successfully created appointment!");
+                $('#detailBox').empty();
             }
         });
+    }
+    else if(optionList.length <= 0){
+        alert("You must enter at least one voteable option!");
     }
     else{
         alert("You left a required field open, try again!");
     }
-
-    $('#detailBox').empty();
 }
+
 
 /* +++ Functionality related to users +++ */
 

@@ -123,5 +123,28 @@ class DataHandler
             return $result;
         }
     }
+
+    //insert options into db
+    public function createNewOptions(array $data){
+        //query for appointment id -> will always? be the latest entry
+        $sql = "SELECT TOP 1 * FROM appointments ORDER BY app_id DESC";
+        $stmnt = $this->connection->prepare($query);
+        $stmnt->execute();
+        $result = $stmnt->get_result()->fetch_all();
+
+        $id = $result[0];
+
+        //go through data array and make prepared statement for every entry
+        for($i=0; $i<count($optionsList); $i++){
+            $sql = "INSERT INTO options (time, app_id) VALUES (?, ?)";
+            $stmnt = $this->connection->prepare($sql);
+            $stmnt->bind_param("si", $time, $app_id);
+
+            $time = $options[i];
+            $app_id = $id;
+
+            $stmnt->execute();
+        }
+    }
 }
 ?>

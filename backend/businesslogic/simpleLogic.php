@@ -33,6 +33,9 @@ class SimpleLogic
             case "checkForUserExistence":
                 $res = $this->dh->checkForUserExistence($param);
                 break;
+            case "createNewOptions":
+                $res = $this->dh->createNewOptions($param);
+                break;
             default:
                 $res = null;
                 break;
