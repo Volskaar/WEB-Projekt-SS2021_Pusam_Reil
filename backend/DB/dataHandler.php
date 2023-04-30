@@ -62,6 +62,7 @@ class DataHandler
         return $data;
     }
 
+    //db insert
     public function createNewEntry(array $data){
         $sql = "INSERT INTO zugriff_options (app_id, option_id, user_id) VALUES (?, ?, ?)";
         $stmnt = $this->connection->prepare($sql);
@@ -76,6 +77,7 @@ class DataHandler
         return $data;
     }
 
+    //db insert 
     public function saveNewComment(array $data){
         $sql = "INSERT INTO comments (text, user_id, appointment_id) VALUES (?, ?, ?)";
         $stmnt = $this->connection->prepare($sql);
