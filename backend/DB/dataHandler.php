@@ -92,14 +92,6 @@ class DataHandler
     
 
 
-    /*returns array of all demo-appointments
-    public function queryAppointments(){
-        $result = array();
-        foreach ($this->getDemoData() as $val) {
-            array_push($result, $val);
-        }
-        return $result;
-    }
     public function checkForUserExistence($username){
         $query = "SELECT user_id FROM user WHERE name = '$username'";
         $stmnt = $this->connection->prepare($query);

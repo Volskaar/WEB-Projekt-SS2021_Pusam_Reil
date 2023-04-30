@@ -175,7 +175,7 @@ function showDetail(target){
 
         let submit = $("<button class='btn btn-primary m-2' id='submitData' type='submit'>Submit your pick</button>");
 
-        /*$(document).on('click','#submitData',function(click){
+        $(document).on('click','#submitData',function(click){
             //determines if the specified user is already in the db / If not, he will be added
             //let userID = userCheck($("#nameInput").val());
 
@@ -211,7 +211,7 @@ function showDetail(target){
             //ajax call function
             submitAppointmentInfo(submittedData);
             //~~~~~~~~~~~~~~~~~~~~~~~~
-        });*/
+        });
 
 
         //put together form
