@@ -200,7 +200,7 @@ function showDetail(target){
             let optionID = [];
 
             //saves the id from the checkboxes in optionID[]
-            for(i = 0; i < optionBox.length; i++){
+            for(i = 0; i < options.length; i++){
                 optionID[i] = $("#flexCheckDefault"+i).val();
             }
 
