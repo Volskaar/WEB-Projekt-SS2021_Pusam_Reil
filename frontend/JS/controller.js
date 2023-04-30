@@ -177,7 +177,7 @@ function showDetail(target){
 
         $(document).on('click','#submitData',function(click){
             //determines if the specified user is already in the db / If not, he will be added
-            let userID = checkForUser($("#nameInput").val());1
+            let userID = checkForUser($("#nameInput").val());
 
             //creates an entry in comments"
             let commentEntry = [];
