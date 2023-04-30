@@ -93,6 +93,38 @@ function loadOptionsForAppointment(appID){
     return options;
 }
 
+function submitAppointmentInfo(submittedData){
+    //creates a connection between the different inputs in the db
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "createNewEntry", param: submittedData},
+        dataType: "json",
+        async: false,
+
+        success: function () {
+            console.log("successfully updated");
+        }
+    });
+}
+
+function saveComment(commentEntry){
+    //saves the comment and the connection to the user who wrote it
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "saveNewComment", param: commentEntry},
+        dataType: "json",
+        async: false,
+
+        success: function () {
+            console.log("comment saved");
+        }
+    });
+}
+
 
 function showDetail(target){
     if(target.matches('a')){
@@ -128,7 +160,8 @@ function showDetail(target){
         let tbody = $("<tbody><tr> </tr></tbody>");
 
         for(let i=0; i<options.length; i++){
-            tbody.append("<td> <input class='form-check-input' type='checkbox' value='' id='flexCheckDefault'> </td>");
+            //sets value from the checkbox to option_id
+            tbody.append("<td> <input class='form-check-input' type='checkbox' value='"+ options[i][0] +"' id='flexCheckDefault"+i+"'> </td>");
         }
 
         table.append(thead);
@@ -140,7 +173,46 @@ function showDetail(target){
 
         let comment = $("<textarea class='form-control' id='comment' placeholder='leave a comment ...'></textarea>");
 
-        let submit = $("<button class='btn btn-primary m-2' id='#' type='submit'>Submit your pick</button>");
+        let submit = $("<button class='btn btn-primary m-2' id='submitData' type='submit'>Submit your pick</button>");
+
+        /*$(document).on('click','#submitData',function(click){
+            //determines if the specified user is already in the db / If not, he will be added
+            //let userID = userCheck($("#nameInput").val());
+
+            //Test
+            let userID = 1;
+
+            //creates an entry in comments"
+            let commentEntry = [];
+            let text = $("#comment").val();
+
+            commentEntry.push(text);
+            commentEntry.push(userID);
+            commentEntry.push(targetID);
+
+            //ajax call function
+            saveComment(commentEntry);
+            //~~~~~~~~~~~~~~~~~~~~~
+
+
+            //creates an entry in "zugriff_options"
+            let submittedData = [];
+            let optionID = [];
+
+            //saves the id from the checkboxes in optionID[]
+            for(i = 0; i < optionBox.length; i++){
+                optionID[i] = $("#flexCheckDefault"+i).val();
+            }
+
+            submittedData.push(targetID);
+            submittedData.push(optionID);
+            submittedData.push(userID);
+
+            //ajax call function
+            submitAppointmentInfo(submittedData);
+            //~~~~~~~~~~~~~~~~~~~~~~~~
+        });*/
+
 
         //put together form
         form.append(name);

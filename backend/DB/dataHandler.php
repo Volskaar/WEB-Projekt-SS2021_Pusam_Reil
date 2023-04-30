@@ -62,10 +62,36 @@ class DataHandler
         return $data;
     }
 
-    public function createNewOptions($data){
+    public function createNewEntry(array $data){
+        $sql = "INSERT INTO zugriff_options (app_id, option_id, user_id) VALUES (?, ?, ?)";
+        $stmnt = $this->connection->prepare($sql);
+        $stmnt-> bind_param("iii", $appID, $optionID, $userID);
 
+        $appID = $data[0];
+        $optionID = $data[1];
+        $userID = $data[2];
+
+        $stmnt->execute();
+
+        return $data;
+    }
+
+    public function saveNewComment(array $data){
+        $sql = "INSERT INTO comments (text, user_id, appointment_id) VALUES (?, ?, ?)";
+        $stmnt = $this->connection->prepare($sql);
+        $stmnt-> bind_param("sii", $text, $userID, $appID);
+
+        $text = $data[0];
+        $userID = $data[1];
+        $appID = $data[2];
+
+        $stmnt->execute();
+
+        return $data;
     }
     
+
+
     /*returns array of all demo-appointments
     public function queryAppointments(){
         $result = array();
