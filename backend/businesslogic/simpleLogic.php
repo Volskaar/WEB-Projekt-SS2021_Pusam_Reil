@@ -29,6 +29,8 @@ class SimpleLogic
                 break;
             case "submitData":
                 $res = $this->dh->saveNewComment($param);
+            case "checkForUserExistence":
+                $res = $this->dh->checkForUserExistence($param);
                 break;
             default:
                 $res = null;

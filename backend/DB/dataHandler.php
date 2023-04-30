@@ -100,17 +100,34 @@ class DataHandler
         }
         return $result;
     }
+    public function checkForUserExistence($username){
+        $query = "SELECT user_id FROM user WHERE name = '$username'";
+        $stmnt = $this->connection->prepare($query);
+        $stmnt->execute();
+        $result = $stmnt->get_result()->fetch_all();
 
-    private static function getDemoData()
-    {
-        $demodata = [
-            [new Appointment(1, "Appointment 1", "Office", "24.04.23", "A small description", 240, ["12:00", "12:30", "13:00", "14:00"], "active")],
-            [new Appointment(2, "Appointment 2", "Office", "25.04.23", "A small description", 30, ["13:00", "13:30"], "inactive")],
-            [new Appointment(3, "Appointment 3", "Office", "26.04.23", "A small description", 120, ["14:00", "14:30"], "active")],
-            [new Appointment(4, "Appointment 4", "Office", "27.04.23", "A small description", 60, ["12:00", "13:30"], "inactive")],
-            [new Appointment(4, "Appointment 5", "Office", "28.04.23", "A small description", 90, ["18:00", "19:30"], "inactive")],
-        ];
-        return $demodata;
-    }*/
+        if(empty($result)){
+            //neuen user anlegen
+            $sql = "INSERT INTO user (name) VALUES (?)";
+            $stmnt = $this->connection->prepare($sql);
+            $stmnt-> bind_param("s", $name);
+
+            $name = $username;
+
+            $stmnt->execute();
+
+            //id von neuem User holen
+            $query = "SELECT user_id FROM user WHERE name = '$username'";
+            $stmnt = $this->connection->prepare($query);
+            $stmnt->execute();
+            $result = $stmnt->get_result()->fetch_all();
+
+            return $result;
+
+        }
+        else{
+            return $result;
+        }
+    }
 }
 ?>

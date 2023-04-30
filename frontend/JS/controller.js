@@ -266,7 +266,7 @@ function showNewAppointmentField(){
     form.append(placeInput);
 
     let durationLabel = $("<label for='duration' class='form-label m-2'> Duration: </label>");
-    let durationInput = $("<input id='duration' class='form-control m-2' type='number' value='00' required/>");
+    let durationInput = $("<input id='duration' class='form-control m-2' type='number' required/>");
     form.append(durationLabel);
     form.append(durationInput);
 
@@ -313,12 +313,26 @@ function createNewAppointment(){
     //1. collect data from form and create array to hand over
     let title = $('#title').val();
     let place = $('#place').val();
-    let create_date = String(Date());
+
+    //format create_date to fit yyyy-mm-dd
+    let today = new Date();
+    let yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+    let create_date = yyyy + "-" + mm + "-" + dd;
+
+
     let cease_date = $('#timeout').val();
     let description = $('#description').val();
     let duration = $('#duration').val();
     let active = 1;
-    let created_by = $('#creator').val();
+
+    //creator must be placed in users if not already there
+    //id given to appointmentdb
+    let name = $('#creator').val();
+    let created_by = checkForUser(name);
+
+    console.log(created_by);
 
     var data = [];
     data.push(title);
@@ -343,17 +357,43 @@ function createNewAppointment(){
     //2. make ajax call to server -> store data
     if(makeCall){
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "../backend/serviceHandler.php",
             cache: false,
             data: {method: "createNewAppointment", param: data},
             dataType: "json",
             async: true,
             success: function () {
-                console.log("success");
+                alert("Successfully created appointment!");
             }
         });
     }
+    else{
+        alert("You left a required field open, try again!");
+    }
 
     $('#detailBox').empty();
+}
+
+/* +++ Functionality related to users +++ */
+
+function checkForUser(username){
+    let userid;
+
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "checkForUserExistence", param: username},
+        dataType: "json",
+        async: false,
+        //on success return id of user (either existing or newly created)
+        success: function (id) {
+            console.log("query-result: " + id[0][0]);
+            userid = id[0][0];
+        }
+    });
+
+    console.log("userid: " + userid);
+    return userid;
 }
