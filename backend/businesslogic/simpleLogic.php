@@ -24,6 +24,9 @@ class SimpleLogic
             case "createNewAppointment":
                 $res = $this->dh->createNewAppointment($param);
                 break;
+            case "checkForUserExistence":
+                $res = $this->dh->checkForUserExistence($param);
+                break;
             default:
                 $res = null;
                 break;
