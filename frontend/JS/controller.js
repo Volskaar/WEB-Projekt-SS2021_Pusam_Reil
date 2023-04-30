@@ -391,11 +391,9 @@ function checkForUser(username){
         async: false,
         //on success return id of user (either existing or newly created)
         success: function (id) {
-            console.log("query-result: " + id[0][0]);
             userid = id[0][0];
         }
     });
 
-    console.log("userid: " + userid);
     return userid;
 }
