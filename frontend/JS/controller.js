@@ -19,10 +19,9 @@ $(document).on('click','#createAppointment',function(click){
 
 /* +++ Functionality related to displaying existing appointments +++ */
 
-//global list of appointments stored for working with data
-let appointments = new Array();
-
 function loadAppointmentList() {
+    //list of appointments stored for working with data
+    let appointments = new Array();
     //create ajax object with servicehandler.php as url
     //execute querypersonbyname with the input value as a parameter
     $.ajax({
@@ -60,11 +59,6 @@ function loadAppointmentList() {
 
                     $('#appointmentList').append(a);
                 }
-
-            //test console print
-            for(let i=0; i<appointments.length; i++){
-                console.log(appointments[i]);
-            }
         }
     });
 }
@@ -103,10 +97,13 @@ function createOptions(optionList){
         cache: false,
         data: {method: "createNewOptions", param: optionList},
         dataType: "json",
-        async: true,
+        async: false,
         //on success creates options in db
-        success: function () {
-            console.log("options created successfully");
+        success: function (id) {
+            console.log("options created successfully -> id:" + id);
+        },
+        error: function(){
+            console.log("option creation failed");
         }
     });
 }
@@ -124,7 +121,6 @@ function submitAppointmentInfo(submittedData){
 
         success: function () {
             console.log("successfully updated");
-            //dynamic reload
         }
     });
 }
@@ -219,18 +215,42 @@ function loadVotings(targetID){
     });
 }
 
+function getAppointmentDetails(id){
+    //retreives detail information on appointment from db
+    details = new Array();
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "getAppointmentDetails", param: id},
+        dataType: "json",
+        async: false,
+        success: function (data) {
+            console.log(data);
+            details = data;
+        }
+    });
+
+    return details;
+}
+
 
 function showDetail(target){
     if(target.matches('a')){
         targetID = target.id -1;
+
+        //get details from database
+        let details = getAppointmentDetails(target.id);
+
+        //display
         $('#detailBox').empty();
     
         //basic detail content box
         let card = $("<div class='card w-100 p-3 bg-light'> </div>");
-        let h2 = $("<h2> " + appointments[targetID][1] + " </h2>");
-        let h5 = $("<h5> Open: " + appointments[targetID][3] + " -> " + appointments[targetID][4] + "</h5>");
-        let p1 = $("<p> " + appointments[targetID][5] + " </p>");
-        let p2 = $("<p> Duration: " + appointments[targetID][6] + "min </p>");
+        let h2 = $("<h2> " + details[0][1] + " </h2>");
+        let h5 = $("<h5> Open: " + details[0][3] + " -> " + details[0][4] + "</h5>");
+        let p1 = $("<p> " + details[0][5] + " </p>");
+        let p2 = $("<p> Duration: " + details[0][6] + "min </p>");
 
         //checkbox form
         let form = $("<form> </form>");
@@ -240,10 +260,7 @@ function showDetail(target){
         let p3 = $("<p class='m-2'> Available Options: </p>");
 
         //display options
-
-        console.log(target.id);
-        let options = loadOptionsForAppointment(target.id);
-        console.log(options);
+        var options = loadOptionsForAppointment(target.id);
         let table = $("<table class='table'> </table>");
         let thead = $("<thead><tr> </tr></thead>");
 
@@ -274,32 +291,25 @@ function showDetail(target){
             let userID = checkForUser($("#nameInput").val());
 
             //creates an entry in comments"
+            let commentEntry = [];
+            let text = $("#comment").val();
 
-            //Checks if comment field is empty
-            if($("#comment").val().length != 0){
-                let commentEntry = [];
-                let text = $("#comment").val();
-    
-                commentEntry.push(text);
-                commentEntry.push(userID);
-                commentEntry.push(targetID);
-    
-                //ajax call function
-                saveComment(commentEntry);
-                //~~~~~~~~~~~~~~~~~~~~~
-            }
+            commentEntry.push(text);
+            commentEntry.push(userID);
+            commentEntry.push(targetID);
+
+            //ajax call function
+            saveComment(commentEntry);
+            //~~~~~~~~~~~~~~~~~~~~~
 
 
             //creates an entry in "zugriff_options"
             let submittedData = [];
             let optionID = [];
-            console.log(options.length);
+
             //saves the id from the checkboxes in optionID[]
             for(i = 0; i < options.length; i++){
-                if(document.getElementById("flexCheckDefault"+i).checked){
-                    optionID.push(parseInt($("#flexCheckDefault"+i).val()));
-                    console.log("check");
-                }
+                optionID[i] = parseInt($("#flexCheckDefault"+i).val());
             }
 
             //Loop to create multiple entries for different options
@@ -335,7 +345,7 @@ function showDetail(target){
         card.append(form);
 
         //ajax - query votings
-        loadVotings(targetID);
+        //queryVotings(targetID);
 
         $('#detailBox').append(card);
     }
@@ -429,8 +439,6 @@ function createNewAppointment(){
     let name = $('#creator').val();
     let created_by = checkForUser(name);
 
-    console.log(created_by);
-
     var data = [];
     data.push(title);
     data.push(place);
@@ -466,9 +474,9 @@ function createNewAppointment(){
             cache: false,
             data: {method: "createNewAppointment", param: data},
             dataType: "json",
-            async: true,
+            async: false,
             success: function () {
-                //after creating appointment -> enter options into db with appointment id (query by title?!)
+                //after creating appointment -> enter options into db with appointment id
                 createOptions(optionList);
                 
                 alert("Successfully created appointment!");
