@@ -83,8 +83,6 @@ function loadOptionsForAppointment(appID){
             }
         }
     });
-
-    console.log(options);
     
     return options;
 }
@@ -175,23 +173,31 @@ function loadUserOptions(optionID, idCount){
     });
 }
 
-function loadComment(targetRow, idCount){
+function loadComment(targetID){
+    comments = new Array();
+
     $.ajax({
         type: "GET",
         url: "../backend/serviceHandler.php",
         cache: false,
-        data: {method: "queryComment", param: targetRow},
+        data: {method: "queryComment", param: targetID},
         dataType: "json",
         async: false,
 
         success: function (data) {
-            console.log("comment loaded");
-            $("#voting"+idCount).append("<p> " + data[0][1] + "</p>");
+            comments = data;
+        },
+        error: function(){
+            console.log("no comments to this appointment");
         }
     });
+
+    return comments;
 }
 
 function loadVotings(targetID){
+    votings = new Array();
+
     //query all votings for this appointment
     $.ajax({
         type: "GET",
@@ -202,17 +208,14 @@ function loadVotings(targetID){
         async: false,
 
         success: function (data) {
-            console.log("query: success");
-            for(let i = 0; i < data.length; i++){
-
-                let voting = $("<div id='voting_"+i+"'> </div>");
-
-                loadUser(data[i][3], i);
-                loadUserOptions(data[i][2], i);
-                loadComment(data[i], i);
-            }
+            votings = data;
+        },
+        error: function(){
+            console.log("no entries to this appointment");
         }
     });
+
+    return votings;
 }
 
 function getAppointmentDetails(id){
@@ -226,7 +229,6 @@ function getAppointmentDetails(id){
         dataType: "json",
         async: false,
         success: function (data) {
-            console.log(data);
             details = data;
         }
     });
@@ -253,7 +255,7 @@ function showDetail(target){
         let p2 = $("<p> Duration: " + details[0][6] + "min </p>");
 
         //checkbox form
-        let form = $("<form> </form>");
+        let form = $("<form accept-charset='utf-8'> </form>");
         let name = $("<div> <label for='nameInput' class='ms-2'> Your Name: </label> <input type='text' class='form-control m-2' id='nameInput' placeholder='your name' required> </div>")
         let optionBox = $("<div class='m-2'> </div>");
 
@@ -300,6 +302,7 @@ function showDetail(target){
 
             //ajax call function
             saveComment(commentEntry);
+            
             //~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -309,12 +312,14 @@ function showDetail(target){
 
             //saves the id from the checkboxes in optionID[]
             for(i = 0; i < options.length; i++){
-                optionID[i] = parseInt($("#flexCheckDefault"+i).val());
+                if(document.getElementById("flexCheckDefault"+ i).checked){
+                    optionID[i] = parseInt($("#flexCheckDefault"+i).val());
+                }
             }
 
             //Loop to create multiple entries for different options
             for(i = 0; i < optionID.length; i++){
-                submittedData.push(targetID);
+                submittedData.push(target.id);
                 submittedData.push(optionID[i]);
                 submittedData.push(userID);
     
@@ -337,12 +342,37 @@ function showDetail(target){
         form.append(comment);
         form.append(submit);
 
+
+        //display previous votes
+        prevVotes = $("<div class='container'> <h2> Previous votes </h2> <ul class='list-group list-group-flush'> </ul></div>");
+
+        votes = loadVotings(target.id);
+
+        if(votes.length > 0){
+            for(let i=0; i<votes.length; i++){
+                prevVotes.append("<li class='list-group-item'> " + votes[i] + "</li>");
+            }
+        }
+
+        //display previous comments
+        prevComments = $("<div class='container'> <h2> Previous Comments </h2> <ul class='list-group list-group-flush'> </ul></div>");
+
+        comments = loadComment(target.id);
+
+        if(comments.length > 0){
+            for(let i=0; i<comments.length; i++){
+                prevComments.append("<li class='list-group-item'> " + comments[i] + "</li>");
+            }
+        }
+
         //put together card
         card.append(h2);
         card.append(h5);
         card.append(p1);
         card.append(p2);
         card.append(form);
+        card.append(prevVotes);
+        card.append(prevComments);
 
         //ajax - query votings
         //queryVotings(targetID);
@@ -448,8 +478,6 @@ function createNewAppointment(){
     data.push(duration);
     data.push(active);
     data.push(created_by);
-
-    console.log(data);
 
     //get options from list of options into array
     let optionList = [];

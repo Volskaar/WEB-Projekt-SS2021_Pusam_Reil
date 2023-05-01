@@ -35,11 +35,19 @@ class DataHandler
 
     //Query Votings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public function queryVotings($appointmentID){
-        $query = "SELECT * FROM zugriff_options WHERE app_id = '$appointmentID'";
-        $stmnt = $this->connection->prepare($query);
+        $sql = "SELECT user.name, options.time FROM user 
+        JOIN zugriff_options ON user.user_id = zugriff_options.user_id 
+        JOIN options ON options.options_id = zugriff_options.option_id
+        WHERE zugriff_options.app_id = '$appointmentID'";
+
+        $stmnt = $this->connection->prepare($sql);
         $stmnt->execute();
         $tmp = $stmnt->get_result()->fetch_all();
 
+        if(empty($tmp)){
+            $tmp[0] = "no previous votes";
+        }
+        
         return $tmp;
     }
 
@@ -61,17 +69,22 @@ class DataHandler
         return $tmp;
     }
 
-    public function queryComment(array $row){
-        $userID = $row[2];
-        $appointmentID = $row[3];
+    public function queryComment($id){
+        $sql = "SELECT user.name, comments.text FROM user
+        JOIN comments ON comments.user_id = user.user_id 
+        WHERE comments.appointment_id = '$id'";
 
-        $query = "SELECT * FROM comments WHERE user_id = '$userID' AND appointment_id = '$appointmentID'";
-        $stmnt = $this->connection->prepare($query);
+        $stmnt = $this->connection->prepare($sql);
         $stmnt->execute();
         $tmp = $stmnt->get_result()->fetch_all();
 
+        if(empty($tmp)){
+            $tmp[0] = "no previous comments";
+        }
+        
         return $tmp;
     }
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     //returns all db-options for one appointment
