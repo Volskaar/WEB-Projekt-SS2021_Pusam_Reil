@@ -39,6 +39,15 @@ class SimpleLogic
             case "queryVotings":
                 $res = $this->dh->queryVotings($param);
                 break;
+            case "queryUser":
+                $res = $this->dh->queryUser($param);
+                break;
+            case "queryOptions":
+                $res = $this->dh->queryUserOptions($param);
+                break;
+            case "queryComment":
+                $res = $this->dh->queryComment($param);
+                break;
             default:
                 $res = null;
                 break;

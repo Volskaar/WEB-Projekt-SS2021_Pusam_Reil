@@ -33,6 +33,7 @@ class DataHandler
         return $tmp;
     }
 
+    //Query Votings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public function queryVotings($appointmentID){
         $query = "SELECT * FROM zugriff_options WHERE app_id = '$appointmentID'";
         $stmnt = $this->connection->prepare($query);
@@ -41,6 +42,37 @@ class DataHandler
 
         return $tmp;
     }
+
+    public function queryUser($userID){
+        $query = "SELECT * FROM user WHERE user_id = '$userID'";
+        $stmnt = $this->connection->prepare($query);
+        $stmnt->execute();
+        $tmp = $stmnt->get_result()->fetch_all();
+
+        return $tmp;
+    }
+
+    public function queryUserOptions($optionID){
+        $query = "SELECT * FROM options WHERE options_id = '$optionID'";
+        $stmnt = $this->connection->prepare($query);
+        $stmnt->execute();
+        $tmp = $stmnt->get_result()->fetch_all();
+
+        return $tmp;
+    }
+
+    public function queryComment(array $row){
+        $userID = $row[2];
+        $appointmentID = $row[3];
+
+        $query = "SELECT * FROM comments WHERE user_id = '$userID' AND appointment_id = '$appointmentID'";
+        $stmnt = $this->connection->prepare($query);
+        $stmnt->execute();
+        $tmp = $stmnt->get_result()->fetch_all();
+
+        return $tmp;
+    }
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     //returns all db-options for one appointment
     public function queryOptions($appID){

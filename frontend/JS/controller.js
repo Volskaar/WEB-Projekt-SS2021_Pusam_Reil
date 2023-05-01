@@ -145,7 +145,57 @@ function saveComment(commentEntry){
     });
 }
 
-function queryVotings(targetID){
+function loadUser(userID, idCount){
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "queryUser", param: userID},
+        dataType: "json",
+        async: false,
+
+        success: function (data) {
+            console.log("user loaded");
+            $("#voting"+idCount).append("<p> " + data[0][1] + "</p>");
+        }
+    });
+}
+
+function loadUserOptions(optionID, idCount){
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "queryUserOptions", param: optionID},
+        dataType: "json",
+        async: false,
+
+        success: function (data) {
+            console.log("options loaded");
+            for(let i = 0; i < data.length; i++){
+                $("#voting"+i).append("<p> " + data[i][1] + "</p>");
+            }
+        }
+    });
+}
+
+function loadComment(targetRow, idCount){
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "queryComment", param: targetRow},
+        dataType: "json",
+        async: false,
+
+        success: function (data) {
+            console.log("comment loaded");
+            $("#voting"+idCount).append("<p> " + data[0][1] + "</p>");
+        }
+    });
+}
+
+function loadVotings(targetID){
     //query all votings for this appointment
     $.ajax({
         type: "GET",
@@ -155,8 +205,16 @@ function queryVotings(targetID){
         dataType: "json",
         async: false,
 
-        success: function () {
+        success: function (data) {
             console.log("query: success");
+            for(let i = 0; i < data.length; i++){
+
+                let voting = $("<div id='voting_"+i+"'> </div>");
+
+                loadUser(data[i][3], i);
+                loadUserOptions(data[i][2], i);
+                loadComment(data[i], i);
+            }
         }
     });
 }
@@ -256,8 +314,9 @@ function showDetail(target){
                 submittedData = new Array;
                 //~~~~~~~~~~~~~~~~~~~~~~~~
             }
-            location.reload(true);
-            console.log("reload");
+            
+            /*location.reload(true);
+            console.log("reload");*/
         });
 
 
@@ -276,7 +335,7 @@ function showDetail(target){
         card.append(form);
 
         //ajax - query votings
-        //queryVotings(targetID);
+        loadVotings(targetID);
 
         $('#detailBox').append(card);
     }
