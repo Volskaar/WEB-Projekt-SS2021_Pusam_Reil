@@ -124,6 +124,7 @@ function submitAppointmentInfo(submittedData){
 
         success: function () {
             console.log("successfully updated");
+            //dynamic reload
         }
     });
 }
@@ -140,6 +141,22 @@ function saveComment(commentEntry){
 
         success: function () {
             console.log("comment saved");
+        }
+    });
+}
+
+function queryVotings(targetID){
+    //query all votings for this appointment
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "queryVotings", param: targetID},
+        dataType: "json",
+        async: false,
+
+        success: function () {
+            console.log("query: success");
         }
     });
 }
@@ -167,7 +184,7 @@ function showDetail(target){
         //display options
 
         console.log(target.id);
-        var options = loadOptionsForAppointment(target.id);
+        let options = loadOptionsForAppointment(target.id);
         console.log(options);
         let table = $("<table class='table'> </table>");
         let thead = $("<thead><tr> </tr></thead>");
@@ -199,25 +216,32 @@ function showDetail(target){
             let userID = checkForUser($("#nameInput").val());
 
             //creates an entry in comments"
-            let commentEntry = [];
-            let text = $("#comment").val();
 
-            commentEntry.push(text);
-            commentEntry.push(userID);
-            commentEntry.push(targetID);
-
-            //ajax call function
-            saveComment(commentEntry);
-            //~~~~~~~~~~~~~~~~~~~~~
+            //Checks if comment field is empty
+            if($("#comment").val().length != 0){
+                let commentEntry = [];
+                let text = $("#comment").val();
+    
+                commentEntry.push(text);
+                commentEntry.push(userID);
+                commentEntry.push(targetID);
+    
+                //ajax call function
+                saveComment(commentEntry);
+                //~~~~~~~~~~~~~~~~~~~~~
+            }
 
 
             //creates an entry in "zugriff_options"
             let submittedData = [];
             let optionID = [];
-
+            console.log(options.length);
             //saves the id from the checkboxes in optionID[]
             for(i = 0; i < options.length; i++){
-                optionID[i] = parseInt($("#flexCheckDefault"+i).val());
+                if(document.getElementById("flexCheckDefault"+i).checked){
+                    optionID.push(parseInt($("#flexCheckDefault"+i).val()));
+                    console.log("check");
+                }
             }
 
             //Loop to create multiple entries for different options
@@ -232,6 +256,8 @@ function showDetail(target){
                 submittedData = new Array;
                 //~~~~~~~~~~~~~~~~~~~~~~~~
             }
+            location.reload(true);
+            console.log("reload");
         });
 
 
@@ -248,6 +274,9 @@ function showDetail(target){
         card.append(p1);
         card.append(p2);
         card.append(form);
+
+        //ajax - query votings
+        //queryVotings(targetID);
 
         $('#detailBox').append(card);
     }

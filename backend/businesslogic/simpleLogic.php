@@ -36,6 +36,9 @@ class SimpleLogic
             case "createNewOptions":
                 $res = $this->dh->createNewOptions($param);
                 break;
+            case "queryVotings":
+                $res = $this->dh->queryVotings($param);
+                break;
             default:
                 $res = null;
                 break;

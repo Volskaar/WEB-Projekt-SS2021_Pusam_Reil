@@ -33,6 +33,15 @@ class DataHandler
         return $tmp;
     }
 
+    public function queryVotings($appointmentID){
+        $query = "SELECT * FROM zugriff_options WHERE app_id = '$appointmentID'";
+        $stmnt = $this->connection->prepare($query);
+        $stmnt->execute();
+        $tmp = $stmnt->get_result()->fetch_all();
+
+        return $tmp;
+    }
+
     //returns all db-options for one appointment
     public function queryOptions($appID){
         $query = "SELECT * FROM options WHERE appointment_fk = '$appID'";
