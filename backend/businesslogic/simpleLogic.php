@@ -39,6 +39,9 @@ class SimpleLogic
             case "getAppointmentDetails":
                 $res = $this->dh->getAppointmentDetails($param);
                 break;
+            case "queryVotings":
+                $res = $this->dh->queryVotings($param);
+                break;
             default:
                 $res = null;
                 break;

@@ -141,6 +141,22 @@ function saveComment(commentEntry){
     });
 }
 
+function queryVotings(targetID){
+    //query all votings for this appointment
+    $.ajax({
+        type: "GET",
+        url: "../backend/serviceHandler.php",
+        cache: false,
+        data: {method: "queryVotings", param: targetID},
+        dataType: "json",
+        async: false,
+
+        success: function () {
+            console.log("query: success");
+        }
+    });
+}
+
 function getAppointmentDetails(id){
     //retreives detail information on appointment from db
     details = new Array();
