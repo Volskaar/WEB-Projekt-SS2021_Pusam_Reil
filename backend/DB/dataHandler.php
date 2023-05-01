@@ -127,24 +127,35 @@ class DataHandler
     //insert options into db
     public function createNewOptions(array $data){
         //query for appointment id -> will always? be the latest entry
-        $sql = "SELECT TOP 1 * FROM appointments ORDER BY app_id DESC";
+        $result = $this->connection->query("SELECT app_id FROM appointment ORDER BY app_id DESC LIMIT 1");
+        $row = $result->fetch_object();
+        $id = $row->app_id;
+
+        //go through data array and make prepared statement for every entry
+        //alles hier drunter funktioniert
+        $length = count($data);
+        $sql = "INSERT INTO options (time, appointment_fk) VALUES (?, ?)";
+
+        for ($x = 0; $x < $length; $x++) {
+            $stmnt = $this->connection->prepare($sql);
+            $stmnt->bind_param("si", $time, $app_id);
+
+            $time = $data[$x];
+            $app_id = $id;
+
+            $stmnt->execute();
+        } 
+
+        return $id;
+    }
+
+    public function getAppointmentDetails($id){
+        $query = "SELECT * FROM appointment WHERE app_id = '$id'";
         $stmnt = $this->connection->prepare($query);
         $stmnt->execute();
         $result = $stmnt->get_result()->fetch_all();
 
-        $id = $result[0];
-
-        //go through data array and make prepared statement for every entry
-        for($i=0; $i<count($optionsList); $i++){
-            $sql = "INSERT INTO options (time, app_id) VALUES (?, ?)";
-            $stmnt = $this->connection->prepare($sql);
-            $stmnt->bind_param("si", $time, $app_id);
-
-            $time = $options[i];
-            $app_id = $id;
-
-            $stmnt->execute();
-        }
+        return $result;
     }
 }
 ?>
